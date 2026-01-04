@@ -1,0 +1,11 @@
+```md
+```mermaid
+flowchart LR
+  U[User / Streamlit / Client] --> API[API Gateway<br/>FastAPI :8000]
+
+  API -->|/embed| E[Embedder Service<br/>SBERT / OpenAI<br/>FastAPI :8001]
+  API -->|vector search| Q[(Qdrant<br/>Vector DB :6333)]
+  API -->|/predict| C[Classifier Service<br/>TF-IDF + Model<br/>FastAPI :8002]
+
+  ETL[Batch ETL<br/>build_corpus + embed_and_upsert] --> E
+  ETL --> Q

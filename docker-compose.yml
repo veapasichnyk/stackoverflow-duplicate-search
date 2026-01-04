@@ -1,0 +1,36 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  embedder:
+    build:
+      context: ./services/embedder
+    env_file:
+      - .env
+    ports:
+      - "8001:8000"
+
+  classifier:
+    build:
+      context: ./services/classifier
+    ports:
+      - "8002:8000"
+
+  api:
+    build:
+      context: ./services/api
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - qdrant
+      - embedder
+      - classifier
+
+volumes:
+  qdrant_data:
